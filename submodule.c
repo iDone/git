@@ -1357,7 +1357,10 @@ int submodule_move_head(const char *path,
 	if (!(flags & SUBMODULE_MOVE_HEAD_DRY_RUN)) {
 		if (new) {
 			struct child_process cp1 = CHILD_PROCESS_INIT;
+
 			/* also set the HEAD accordingly */
+			prepare_submodule_repo_env(&cp1.env_array);
+
 			cp1.git_cmd = 1;
 			cp1.no_stdin = 1;
 			cp1.dir = path;
