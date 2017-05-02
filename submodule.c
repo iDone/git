@@ -1356,7 +1356,7 @@ static int submodule_has_dirty_index(const struct submodule *sub)
 {
 	struct child_process cp = CHILD_PROCESS_INIT;
 
-	prepare_submodule_repo_env_no_git_dir(&cp.env_array);
+	prepare_submodule_repo_env(&cp.env_array);
 
 	cp.git_cmd = 1;
 	argv_array_pushl(&cp.args, "diff-index", "--quiet",
@@ -1373,7 +1373,7 @@ static int submodule_has_dirty_index(const struct submodule *sub)
 static void submodule_reset_index(const char *path)
 {
 	struct child_process cp = CHILD_PROCESS_INIT;
-	prepare_submodule_repo_env_no_git_dir(&cp.env_array);
+	prepare_submodule_repo_env(&cp.env_array);
 
 	cp.git_cmd = 1;
 	cp.no_stdin = 1;
@@ -1454,7 +1454,7 @@ int submodule_move_head(const char *path,
 		}
 	}
 
-	prepare_submodule_repo_env_no_git_dir(&cp.env_array);
+	prepare_submodule_repo_env(&cp.env_array);
 
 	cp.git_cmd = 1;
 	cp.no_stdin = 1;
@@ -1485,7 +1485,10 @@ int submodule_move_head(const char *path,
 	if (!(flags & SUBMODULE_MOVE_HEAD_DRY_RUN)) {
 		if (new) {
 			struct child_process cp1 = CHILD_PROCESS_INIT;
+
 			/* also set the HEAD accordingly */
+			prepare_submodule_repo_env(&cp1.env_array);
+
 			cp1.git_cmd = 1;
 			cp1.no_stdin = 1;
 			cp1.dir = path;
